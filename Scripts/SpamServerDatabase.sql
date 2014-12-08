@@ -5,9 +5,9 @@ use SpamServer;
 
 create table users(
 id integer auto_increment not null primary key,
-name varchar(255) default null,
+username varchar(255) default null,
 date_created datetime not null,
-password varchar(4000) not null,
+password varchar(4000) not null
 );
 
 create table emails(

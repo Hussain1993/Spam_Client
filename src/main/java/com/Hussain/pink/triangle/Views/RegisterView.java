@@ -1,5 +1,7 @@
 package com.Hussain.pink.triangle.Views;
 
+import com.Hussain.pink.triangle.Model.DatabaseQueries.DatabaseQueries;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +35,12 @@ public class RegisterView extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String username = usernameText.getText();
+                if(DatabaseQueries.userExistsInDatabase(username))
+                {
+                    usernameText.setText("");
+                    JOptionPane.showMessageDialog(RegisterView.this, "Please choose another username", "Warning", JOptionPane.ERROR_MESSAGE);
+                }
 
             }
         });
