@@ -1,15 +1,20 @@
 package com.Hussain.pink.triangle.Views;
 
 import com.Hussain.pink.triangle.Model.DatabaseQueries.DatabaseQueries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by Hussain on 01/12/2014.
  */
 public class RegisterView extends JFrame {
+    private static final Logger LOG = LoggerFactory.getLogger(RegisterView.class);
 
     private JPanel rootPanel;
     private JTextField usernameText;
@@ -41,7 +46,19 @@ public class RegisterView extends JFrame {
                     usernameText.setText("");
                     JOptionPane.showMessageDialog(RegisterView.this, "Please choose another username", "Warning", JOptionPane.ERROR_MESSAGE);
                 }
-
+                else
+                {
+                    try {
+                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+                        String password = new String(passwordText.getPassword());
+                        messageDigest.update(password.getBytes());
+                        String hashedPassword = new String(messageDigest.digest());
+                        LOG.info(hashedPassword);
+                    }
+                    catch (NoSuchAlgorithmException exception) {
+                        LOG.error("There was an error when hashing the user password", exception);
+                    }
+                }
             }
         });
 
