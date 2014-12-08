@@ -31,6 +31,13 @@
                 <include>**/**</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${basedir}/Scripts</directory>
+            <outputDirectory>/Scripts</outputDirectory>
+            <includes>
+                <include>SpamServerDatabase.sql</include>
+            </includes>
+        </fileSet>
     </fileSets>
 
     <dependencySets>
