@@ -94,10 +94,12 @@ public class DatabaseQueries {
 
             usersReturned = stmt.executeQuery();
 
+            //Check there are results returned by the array
             if(!usersReturned.first())
             {
                 LOG.error("No users were found in the database with the username: {}",username);
             }
+            //Check if there if there is more than one array
             else if(usersReturned.first() && usersReturned.next())
             {
                 LOG.error("There was more than one user returned");
