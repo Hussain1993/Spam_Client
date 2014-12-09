@@ -1,13 +1,13 @@
 package com.Hussain.pink.triangle.Views;
 
 import com.Hussain.pink.triangle.Model.DatabaseQueries.DatabaseQueries;
+import com.Hussain.pink.triangle.Utils.HashingFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -52,9 +52,7 @@ public class RegisterView extends JFrame {
                     else
                     {
                         try {
-                            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-                            messageDigest.update(password.getBytes());
-                            String hashedPassword = new String(messageDigest.digest());
+                            String hashedPassword = HashingFunctions.hashPassword(password);
                             if(!DatabaseQueries.addNewUserToDatabase(username,hashedPassword))
                             {
                                 LOG.error("There was error when trying to add the user to the database");

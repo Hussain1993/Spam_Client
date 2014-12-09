@@ -1,14 +1,12 @@
 package com.Hussain.pink.triangle.Model.DatabaseQueries;
 
+import com.Hussain.pink.triangle.Model.User;
 import com.Hussain.pink.triangle.utils.DBUtils;
 import org.apache.commons.dbutils.DbUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 /**
  * Created by Hussain on 08/12/2014.
@@ -79,5 +77,53 @@ public class DatabaseQueries {
             DbUtils.closeQuietly(stmt);
         }
         return false;
+    }
+
+    public static User loginUser(String username, String hashedPassword){
+        String query = "SELECT ID,USERNAME FROM USERS WHERE USERNAME=? AND PASSWORD=?";
+        ResultSet usersReturned = null;
+        try {
+            if (!DBUtils.getInit()) {
+                initDatabaseUtils();
+            }
+            conn = DBUtils.getConnection();
+            stmt = conn.prepareStatement(query);
+
+            stmt.setString(1,username);
+            stmt.setString(2,hashedPassword);
+
+            usersReturned = stmt.executeQuery();
+
+            if(!usersReturned.first())
+            {
+                LOG.error("No users were found in the database with the username: {}",username);
+            }
+            else if(usersReturned.first() && usersReturned.next())
+            {
+                LOG.error("There was more than one user returned");
+            }
+            else
+            {
+                //Move the cursor back to the first row
+                usersReturned.first();
+                int id = usersReturned.getInt(1);
+                String usernameReturned = usersReturned.getString(2);
+
+                return new User(id,usernameReturned);
+            }
+
+        }
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            LOG.error("There was an error while initialising the database connection",e);
+        }
+        catch (SQLException e) {
+            LOG.error("There was an error when getting the connection to the database",e);
+        }
+        finally {
+            DbUtils.closeQuietly(conn);
+            DbUtils.closeQuietly(stmt);
+            DbUtils.closeQuietly(usersReturned);
+        }
+        return null;
     }
 }
