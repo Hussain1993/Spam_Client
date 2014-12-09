@@ -28,7 +28,7 @@ public class RegisterView extends JFrame {
         super("Register for the Spam Client");
 
         setContentPane(rootPanel);
-
+        getRootPane().setDefaultButton(registerButton);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         addActionListeners();
@@ -41,22 +41,32 @@ public class RegisterView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String username = usernameText.getText();
-                if(DatabaseQueries.userExistsInDatabase(username))
+                String password = new String(passwordText.getPassword());
+                if(!username.isEmpty() && !password.isEmpty())
                 {
-                    usernameText.setText("");
-                    JOptionPane.showMessageDialog(RegisterView.this, "Please choose another username", "Warning", JOptionPane.ERROR_MESSAGE);
-                }
-                else
-                {
-                    try {
-                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-                        String password = new String(passwordText.getPassword());
-                        messageDigest.update(password.getBytes());
-                        String hashedPassword = new String(messageDigest.digest());
-                        LOG.info(hashedPassword);
+                    if(DatabaseQueries.userExistsInDatabase(username))
+                    {
+                        usernameText.setText("");
+                        JOptionPane.showMessageDialog(RegisterView.this, "Please choose another username", "Warning", JOptionPane.ERROR_MESSAGE);
                     }
-                    catch (NoSuchAlgorithmException exception) {
-                        LOG.error("There was an error when hashing the user password", exception);
+                    else
+                    {
+                        try {
+                            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+                            messageDigest.update(password.getBytes());
+                            String hashedPassword = new String(messageDigest.digest());
+                            if(!DatabaseQueries.addNewUserToDatabase(username,hashedPassword))
+                            {
+                                LOG.error("There was error when trying to add the user to the database");
+                            }
+                            else
+                            {
+                                statusLabel.setText("User Added");
+                            }
+                        }
+                        catch (NoSuchAlgorithmException exception) {
+                            LOG.error("There was an error when hashing the user password", exception);
+                        }
                     }
                 }
             }
