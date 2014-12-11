@@ -1,6 +1,7 @@
 package com.Hussain.pink.triangle.Views;
 
 import com.Hussain.pink.triangle.Model.User;
+import com.Hussain.pink.triangle.Utils.FileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,8 @@ public class UploadEmailView extends JFrame{
 
     private User user;
 
+    private String emailPath;
+
     public UploadEmailView(User user){
         super("Upload email to scan");
 
@@ -39,14 +42,17 @@ public class UploadEmailView extends JFrame{
         browseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                emailPath = FileIO.openFileDialog(UploadEmailView.this, FileIO.OPEN_MODE);
             }
         });
 
         scanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                if(!emailPath.isEmpty() && FileIO.fileExists(emailPath))
+                {
+                    //Scan the email here
+                }
             }
         });
     }
