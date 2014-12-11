@@ -55,7 +55,8 @@ public class LoginView extends JFrame {
                         }
                         else
                         {
-                            statusLabel.setText("Logged in");
+                            LoginView.this.dispose();
+                            new UploadEmailView(loggedInUser).setVisible(true);
                         }
                     }
                     catch (NoSuchAlgorithmException e1) {
